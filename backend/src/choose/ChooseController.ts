@@ -1,5 +1,6 @@
 import Express from 'express';
 import Choose from './Choose';
+import Auth from '../middlewares/Auth';
 
 const router = Express.Router();
 
@@ -10,7 +11,7 @@ router.get('/choose', async (req, res)=>{
 });
 
 router.get('/choose/:id', async (req,res)=>{
-	let {id} = req.body;
+	let id = parseInt(req.params.id);
 	if(!isNaN(id)){
 		let choose = await Choose.findOne({id: id});
 		if(choose != null){
@@ -40,10 +41,10 @@ router.post('/choose', async (req,res)=>{
 	}
 });
 
-router.post('/choose/vote/:id', async (req,res)=>{
-	let {id} = req.body;
+router.post('/choose/vote/:id', Auth, async (req,res)=>{
+	let id = parseInt(req.params.id);
 	let {second} = req.query;
-
+	
 	if(!isNaN(id)){
 		let choose = await Choose.findByPk(id);
 		if(choose != null){
@@ -62,7 +63,7 @@ router.post('/choose/vote/:id', async (req,res)=>{
 });
 
 router.put('/choose/:id', async (req,res)=>{
-	let {id} = req.body;
+	let id = parseInt(req.params.id);
 	if(!isNaN(id)){
 		let choose = await Choose.findByPk(id);
 		if(choose != null){
@@ -94,7 +95,7 @@ router.put('/choose/:id', async (req,res)=>{
 });
 
 router.delete('/choose/:id', async (req, res)=>{
-	let {id} = req.body;
+	let id = parseInt(req.params.id);
 	if(!isNaN(id)){
 		await Choose.destroy({where:{id:id}});
 		res.sendStatus(200);
